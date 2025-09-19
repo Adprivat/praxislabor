@@ -1,0 +1,72 @@
+export const BASE_ACTIVITY_CATEGORIES = [
+  {
+    id: 1,
+    name: "Arbeit",
+    description: "Fokussierte Projekt- und Produktarbeit",
+    color: "#2563eb",
+    sortOrder: 1,
+    active: true,
+  },
+  {
+    id: 2,
+    name: "Meetings",
+    description: "Besprechungen und Abstimmungen",
+    color: "#7c3aed",
+    sortOrder: 2,
+    active: true,
+  },
+  {
+    id: 3,
+    name: "Organisation",
+    description: "Interne Ablaeufe und Admin",
+    color: "#059669",
+    sortOrder: 3,
+    active: true,
+  },
+  {
+    id: 4,
+    name: "Abwesenheit",
+    description: "Urlaub, Krankheit, Fortbildungen",
+    color: "#ea580c",
+    sortOrder: 4,
+    active: true,
+  },
+  {
+    id: 5,
+    name: "Sonstiges",
+    description: "Alles was nicht direkt zuordenbar ist",
+    color: "#0f172a",
+    sortOrder: 5,
+    active: true,
+  },
+] as const;
+
+export const BASE_ACTIVITY_TAGS = [
+  { id: 201, name: "Daily", categoryId: 2, sortOrder: 1, active: true },
+  { id: 202, name: "Planning", categoryId: 2, sortOrder: 2, active: true },
+  { id: 203, name: "Review", categoryId: 2, sortOrder: 3, active: true },
+  { id: 204, name: "Retro", categoryId: 2, sortOrder: 4, active: true },
+  { id: 205, name: "Kundencall", categoryId: 2, sortOrder: 5, active: true },
+] as const;
+
+export const BASE_ACTIVITY_BLOCKS = [
+  { id: 101, label: "Entwicklung", categoryId: 1, description: "Feature- und Bug-Umsetzung", isBillable: true, active: true, sortOrder: 1 },
+  { id: 102, label: "Code-Review", categoryId: 1, description: "Pull Requests pruefen", isBillable: true, active: true, sortOrder: 2 },
+  { id: 103, label: "Testing", categoryId: 1, description: "Manuelle oder automatisierte Tests", isBillable: true, active: true, sortOrder: 3 },
+  { id: 104, label: "Dokumentation", categoryId: 1, description: "Confluence, Runbooks, Docs", isBillable: true, active: true, sortOrder: 4 },
+  { id: 105, label: "Support / Hotline", categoryId: 1, description: "Kunden- und Nutzeranfragen", isBillable: false, active: true, sortOrder: 5 },
+  { id: 201, label: "Daily Standup", categoryId: 2, tagId: 201, isBillable: false, active: true, sortOrder: 1 },
+  { id: 202, label: "Sprint Planning", categoryId: 2, tagId: 202, isBillable: false, active: true, sortOrder: 2 },
+  { id: 203, label: "Sprint Review", categoryId: 2, tagId: 203, isBillable: false, active: true, sortOrder: 3 },
+  { id: 204, label: "Retrospektive", categoryId: 2, tagId: 204, isBillable: false, active: true, sortOrder: 4 },
+  { id: 205, label: "Kundencall", categoryId: 2, tagId: 205, isBillable: true, active: true, sortOrder: 5 },
+  { id: 301, label: "Admin / IT", categoryId: 3, isBillable: false, active: true, sortOrder: 1 },
+  { id: 302, label: "E-Mail / Posteingang", categoryId: 3, isBillable: false, active: true, sortOrder: 2 },
+  { id: 303, label: "Onboarding", categoryId: 3, isBillable: false, active: true, sortOrder: 3 },
+  { id: 401, label: "Urlaub", categoryId: 4, isBillable: false, active: true, sortOrder: 1 },
+  { id: 402, label: "Krank", categoryId: 4, isBillable: false, active: true, sortOrder: 2 },
+  { id: 403, label: "Arzt", categoryId: 4, isBillable: false, active: true, sortOrder: 3 },
+  { id: 404, label: "Fortbildung / Schulung", categoryId: 4, isBillable: false, active: true, sortOrder: 4 },
+  { id: 501, label: "Reisezeit", categoryId: 5, isBillable: true, active: true, sortOrder: 1 },
+  { id: 502, label: "Pause", categoryId: 5, isBillable: false, active: true, sortOrder: 2 },
+] as const;

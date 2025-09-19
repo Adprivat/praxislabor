@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
+enum TeamRole {
+  MEMBER
+  LEAD
+}
+
+enum EntrySource {
+  MANUAL
+  QUICK_SELECT
+  IMPORT
+  ADMIN_ADJUSTMENT
+}
+
+enum HistoryAction {
+  CREATED
+  UPDATED
+  DELETED
+  RESTORED
+}
+
+model User {
+  id                      String             @id @default(cuid())
+  email                   String             @unique
+  name                    String
+  passwordHash            String?
+  role                    UserRole           @default(EMPLOYEE)
+  isActive                Boolean            @default(true)
+  entries                 TimeEntry[]
+  editedEntries           TimeEntry[]        @relation("EditedEntries")
+  timeEntryHistoryChanges TimeEntryHistory[] @relation("HistoryChangedBy")
+  memberships             TeamMembership[]
+  favorites               FavoriteBlock[]
+  workSchedules           WorkSchedule[]
+  workSchedulesCreated    WorkSchedule[]     @relation("WorkScheduleCreatedBy")
+  absences                Absence[]
+  absencesCreated         Absence[]          @relation("AbsenceCreatedBy")
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+}
+
+model Team {
+  id           String           @id @default(cuid())
+  name         String
+  passwordHash String?
+  members      TeamMembership[]
+  archivedAt   DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model TeamMembership {
+  id        String   @id @default(cuid())
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  role      TeamRole @default(MEMBER)
+  createdAt DateTime @default(now())
+
+  @@unique([teamId, userId])
+}
+
+model ActivityCategory {
+  id           Int             @id @default(autoincrement())
+  name         String
+  passwordHash String?
+  description  String?
+  color        String?         @db.VarChar(16)
+  sortOrder    Int             @default(0)
+  active       Boolean         @default(true)
+  blocks       ActivityBlock[]
+  tags         ActivityTag[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model ActivityTag {
+  id            Int               @id @default(autoincrement())
+  name          String
+  passwordHash  String?
+  description   String?
+  category      ActivityCategory? @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  sortOrder     Int               @default(0)
+  active        Boolean           @default(true)
+  blocks        ActivityBlock[]
+  timeEntryTags TimeEntryTag[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model ActivityBlock {
+  id          Int              @id @default(autoincrement())
+  label       String
+  category    ActivityCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  tag         ActivityTag?     @relation(fields: [tagId], references: [id])
+  tagId       Int?
+  description String?
+  isBillable  Boolean          @default(false)
+  active      Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  entries     TimeEntry[]
+  favorites   FavoriteBlock[]
+  absences    Absence[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model FavoriteBlock {
+  id         Int           @id @default(autoincrement())
+  user       User          @relation(fields: [userId], references: [id])
+  userId     String
+  block      ActivityBlock @relation(fields: [blockId], references: [id])
+  blockId    Int
+  lastUsedAt DateTime?
+  createdAt  DateTime      @default(now())
+
+  @@unique([userId, blockId])
+}
+
+model TimeEntry {
+  id              String             @id @default(cuid())
+  user            User               @relation(fields: [userId], references: [id])
+  userId          String
+  block           ActivityBlock      @relation(fields: [blockId], references: [id])
+  blockId         Int
+  start           DateTime
+  end             DateTime?
+  durationMinutes Int?
+  note            String?            @db.Text
+  source          EntrySource        @default(MANUAL)
+  editedBy        User?              @relation("EditedEntries", fields: [editedById], references: [id])
+  editedById      String?
+  tags            TimeEntryTag[]
+  history         TimeEntryHistory[]
+  deletedAt       DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([userId, start])
+  @@index([blockId])
+}
+
+model TimeEntryTag {
+  id      Int         @id @default(autoincrement())
+  entry   TimeEntry   @relation(fields: [entryId], references: [id])
+  entryId String
+  tag     ActivityTag @relation(fields: [tagId], references: [id])
+  tagId   Int
+
+  @@unique([entryId, tagId])
+}
+
+model TimeEntryHistory {
+  id          Int           @id @default(autoincrement())
+  entry       TimeEntry     @relation(fields: [entryId], references: [id])
+  entryId     String
+  action      HistoryAction
+  snapshot    Json
+  changedAt   DateTime      @default(now())
+  changedBy   User?         @relation("HistoryChangedBy", fields: [changedById], references: [id])
+  changedById String?
+}
+
+model WorkSchedule {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  validFrom     DateTime
+  weeklyMinutes Int
+  createdAt     DateTime @default(now())
+  createdBy     User?    @relation("WorkScheduleCreatedBy", fields: [createdById], references: [id])
+  createdById   String?
+
+  @@index([userId, validFrom])
+}
+
+model Absence {
+  id              String        @id @default(cuid())
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+  category        ActivityBlock @relation(fields: [categoryBlockId], references: [id])
+  categoryBlockId Int
+  startDate       DateTime
+  endDate         DateTime
+  note            String?       @db.Text
+  createdAt       DateTime      @default(now())
+  createdBy       User?         @relation("AbsenceCreatedBy", fields: [createdById], references: [id])
+  createdById     String?
+
+  @@index([userId, startDate])
+}
