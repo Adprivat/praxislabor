@@ -72,7 +72,7 @@ npm run dev
 
 - EMPLOYEE: `p.muster@firma.de` / Passwort: `test1234`
 - MANAGER: `m.lead@firma.de` / Passwort: `test1234`
-- ADMIN: `a.admin@firma.de` / Passwort: `admin123`
+- ADMIN: `a.admin@firma.de` / Passwort: `test1234`
 
 ## Wichtige Seiten & Rollen
 
@@ -154,6 +154,4 @@ npm start
 - Anmeldung schlägt fehl: Seed ausführen (`npm run db:seed`) und Zugangsdaten wie oben nutzen.
 - Windows PowerShell: Achte auf Anführungszeichen in `.env` und verwende die oben angegebenen Befehle 1:1.
 
----
 
-Kontakt/Weiterentwicklung: Siehe die Datei `Agents.md` für Zielsetzung, Akzeptanzkriterien und Stack-Entscheidungen.
