@@ -1,5 +1,4 @@
-Praxislabor Zeiterfassung — schnelles, bedienbares Tool zur Arbeitszeiterfassung mit Tätigkeits-Bausteinen (Kategorien, Tags, Bausteine) und Auswertungen für Management.
-
+Praxislabor Zeiterfassung
 ## Features (MVP)
 
 - Zeiterfassung pro Person: Start/Ende oder Dauer, optional Notiz
